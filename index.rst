@@ -13,6 +13,7 @@ What is histb
    :caption: Contents
 
    ./hardware/index
+   ./software/index
 
 Why histb?
 ----------
