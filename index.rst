@@ -12,6 +12,8 @@ What is histb
    :maxdepth: 2
    :caption: Contents
 
+   ./hardware/index
+
 Why histb?
 ----------
 
