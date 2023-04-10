@@ -8,3 +8,4 @@ This category describes histb SoC hardware resources and peripherals.
    :caption: Contents
 
    ./naming
+   ./socs
