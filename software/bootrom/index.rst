@@ -8,3 +8,4 @@ This category describes how to interact with on-chip bootrom, i.e. booting into 
    :caption: Contents
 
    ./fastboot-bin
+   ./bootstrap
