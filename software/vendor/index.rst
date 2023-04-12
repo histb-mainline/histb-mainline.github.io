@@ -6,3 +6,5 @@ This category describes behaviours of vendor `BSP <https://en.wikipedia.org/wiki
 .. toctree::
    :maxdepth: 2
    :caption: Contents
+
+   ./fastboot
