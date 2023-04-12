@@ -6,3 +6,5 @@ This category describes how to interact with on-chip bootrom, i.e. booting into 
 .. toctree::
    :maxdepth: 2
    :caption: Contents
+
+   ./fastboot-bin
