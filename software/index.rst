@@ -9,3 +9,4 @@ This category describes boot sequence and supporting softwares.
 
    ./bootrom/index
    ./vendor/index
+   ./opensource/index
