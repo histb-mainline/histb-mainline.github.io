@@ -8,3 +8,4 @@ This category describes boot sequence and supporting softwares.
    :caption: Contents
 
    ./bootrom/index
+   ./vendor/index
