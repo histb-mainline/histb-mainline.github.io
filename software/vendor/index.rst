@@ -8,3 +8,4 @@ This category describes behaviours of vendor `BSP <https://en.wikipedia.org/wiki
    :caption: Contents
 
    ./fastboot
+   ./layout
