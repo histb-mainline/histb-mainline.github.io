@@ -9,3 +9,4 @@ This category describes histb SoC hardware resources and peripherals.
 
    ./naming
    ./socs
+   ./cipher
