@@ -12,3 +12,4 @@ This category describes histb SoC hardware resources and peripherals.
    ./cipher
    ./otp
    ./rng
+   ./sha
