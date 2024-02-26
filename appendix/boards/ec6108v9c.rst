@@ -1,0 +1,159 @@
+EC6108V9C
+=========
+
+Board
+-----
+
+.. image:: /_images/ec6108v9c-top.thumb.jpg
+  :target: ../../_images/ec6108v9c-top.jpg
+  :width: 25%
+  :alt: Board top view
+
+.. image:: /_images/ec6108v9c-bottom.thumb.jpg
+  :target: ../../_images/ec6108v9c-bottom.jpg
+  :width: 25%
+  :alt: Board bottom view
+
+::ref:`USB_BOOT <USB Boot>`: J16 (near power switch)
+
+.. image:: /_images/ec6108v9c-usb-boot.thumb.jpg
+  :target: ../../_images/ec6108v9c-usb-boot.jpg
+  :width: 25%
+  :alt: USB Boot pin
+
+Boot log
+--------
+
+.. code-block:: none
+
+  Bootrom start
+  Boot from eMMC
+  Initializing DDR ... OK
+  Starting DDR training ... OK
+  Starting fastboot ...
+
+
+  System startup
+
+  Reg Version:  v1.1.0
+  Reg Time:     2016/2/25  9:23:54
+  Reg Name:     hi3798mdmo1g_hi3798mv100_ddr3_1gbyte_16bitx2_4layers_emmc.reg
+
+  Relocate Boot to DDR
+
+  Jump to DDR
+
+
+  Compressed-boot v1.0.0
+  Uncompress.......................Ok
+
+
+  System startup
+
+  Reg Version:  v1.1.0
+  Reg Time:     2016/2/25  9:23:54
+  Reg Name:     hi3798mdmo1g_hi3798mv100_ddr3_1gbyte_16bitx2_4layers_emmc.reg
+
+  Relocate Boot to DDR
+
+  Jump to DDR
+
+
+  Fastboot 3.3.0-00709-ga3bdc60-dirty (liuhh@HW-TV-S5) (Jul 07 2016 - 12:33:43)
+
+  Fastboot:      Version 3.3.0
+  Build Date:    Jul  7 2016, 12:34:51
+  CPU:           Hi3798Mv100 (CA)
+  Boot Media:    eMMC
+  DDR Size:      1GB
+
+  Check nand flash controller v610. found
+  Special NAND id table Version 1.36
+  Nand ID: 0x00 0x00 0x00 0x00 0x00 0x00 0x00 0x00
+  No NAND device found!!!
+
+  MMC/SD controller initialization.
+  MMC/SD Card:
+      MID:         0x11
+      Read Block:  512 Bytes
+      Write Block: 512 Bytes
+      Chip Size:   7456M Bytes (High Capacity)
+      Name:        "008G3"
+      Chip Type:   MMC
+      Version:     4.0
+      Speed:       52000000Hz
+      Bus Width:   8bit
+      Boot Addr:   0 Bytes
+
+  Boot Env on eMMC
+      Env Offset:          0x00100000
+      Env Size:            0x00010000
+      Env Range:           0x00010000
+  HI_OTP_LockIdWord,327: ID_WORD have already been locked
+
+
+  SDK Version: HiSTBAndroidV600R001C00SPC063_v2016022921
+
+  =====FILE: higo/adp_gfx.c, LINE: 150, Ret:b0038002
+  =====FILE: higo/adp_gfx.c, LINE: 194, Ret:b0038002
+  =====FILE: higo/adp_gfx.c, LINE: 388, Ret:b0038002
+  =====FILE: higo/hi_go_bliter.c, LINE: 149, Ret:b0038002
+  Security Begin Read RSA Key!
+  Secure boot is enabled
+  get key value  0x0
+  HI_Flash_Read Ret= 3072
+  HI_Flash_Read Ret= 3072
+  HI_Flash_Read Ret= 10485760
+  HI_Flash_Read Ret= 10485760
+  ******** boot from kernel...********
+  [HMT]Verify kernel begin.
+  HI_Flash_Read Ret= 1024
+  HI_Flash_Read Ret= 1024
+  The kernel size is [0]
+  e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+  [HMT] RSA Verify the kernel Error.
+  [HMT] Check RSA ERROR!!
+  [HMT] The kernel verify failed.
+  HI_Flash_Read Ret= 512
+  HI_Flash_Read Ret= 512
+  Stb mac is : [XX:XX:XX:XX:XX:XX]
+
+  hpm_code_average = 0x106
+
+  Reserve Memory
+      Start Addr:          0x3FFFE000
+      Bound Addr:          0x8E64000
+      Free  Addr:          0x3F73C000
+      Alloc Block:  Addr        Size
+                    0x3FBFD000       4194304
+                    0x3F8FC000       3145728
+                    0x3F87B000       524288
+                    0x3F878000       8192
+                    0x3F843000       212992
+                    0x3F742000       1048576
+                    0x3F73E000       12288
+                    0x3F73D000       0
+                    0x3F73C000       0
+
+  Press Ctrl+C to stop autoboot
+
+  kernel  @ 3e08000 (2572288 bytes)
+  ramdisk @ 4e00000 (2347778 bytes)
+  page size @ 2048 bytes
+  initrd rd_start = 4e00000,rd_end = 503d302
+  ## Booting kernel from Legacy Image at 01ffc7c0 ...
+     Image Name:   Linux-3.10.0_s40
+     Image Type:   ARM Linux Kernel Image (uncompressed)
+     Data Size:    2572224 Bytes = 2.5 MiB
+     Load Address: 02000000
+     Entry Point:  02000000
+  load:2000000,blob_start:1ffc7c0,blob_end:22707c0,image_start:1ffc800,image_len:273fc0
+     Loading Kernel Image ... OK
+  OK
+     kernel loaded at 0x02000000, end = 0x02273fc0
+  images.os.start = 0x1FFC7C0, images.os.end = 0x22707c0
+  images.os.load = 0x2000000, load_end = 0x2273fc0
+  ret -2
+  initrd rd_start = 4e00000,rd_end = 503d302
+
+  Starting kernel ...
