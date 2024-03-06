@@ -20,6 +20,131 @@ Board
   :width: 25%
   :alt: USB Boot pin
 
+bootargs
+--------
+
+.. code-block:: none
+
+  baudrate=115200
+  bootargs=console=ttyAMA0,115200 blkdevparts=mmcblk0:2M(fastboot),2M(bootargs),2M(bootargsbak),10M(recovery),10M(recoverybak),2M(properties),2M(markparam),2M(baseparam),2M(pqparam),20M(logo),40M(fastplay),20M(kernel),2M(misc),50M(private),2M(tpl),100M(factory),600M(otapackage),100M(cache),800M(system),-(userdata) quiet
+  bootargs_1G=mem=1G mmz=ddr,0,0,44M
+  bootargs_2G=mem=2G mmz=ddr,0,0,44M
+  bootargs_3840M=mem=1G mmz=ddr,0,0,44M
+  bootargs_512M=mem=512M mmz=ddr,0,0,44M
+  bootargs_768M=mem=768M mmz=ddr,0,0,44M
+  bootcmd=mmc read 0 0x1FFBFC0 0x2F000 0x5000; bootm 0x1FFBFC0
+  bootdelay=0
+  bootfile="uImage"
+  gmac_debug=0
+  ipaddr=192.168.1.10
+  netmask=255.255.255.0
+  phy_addr=2,1
+  phy_intf=mii,rgmii
+  serverip=192.168.1.1
+  stderr=serial
+  stdin=serial
+  stdout=serial
+  use_mdio=0,1
+  verify=n
+
+Flash layout
+------------
+
+.. table::
+
+  ===========  ======  ====  ==============================================
+  Name         Offset  Size  Description
+  ===========  ======  ====  ==============================================
+  fastboot     0M      2M    :doc:`/software/bootrom/bootloader`
+  bootargs     2M      2M    U-Boot env file, sector size: ``0x10000``
+  bootargsbak  4M      2M    bootargs backup
+  recovery     5M      10M   U-Boot legacy uImage
+  recoverybak  5M      10M   recovery backup
+  properties   5M      2M    ``hw_version`` ``chip_type`` ``soc_type`` ``stb_manufacturer`` ``stb_id`` ``mac`` ``stb_factorytest_finish``
+  markparam    5M      2M    ?
+  baseparam    22M     2M    ``hi_drv_pdm.h``
+  pqparam      26M     2M    Video Post Processing parameters
+  logo         30M     20M   ``LOGO_TABLE``
+  fastplay     34M     40M   Fastboot DRM parameters (optional)
+  kernel       82M     20M   Android bootimg
+  misc         50M     2M    empty
+  private      82M     50M   ext3/4, Android ``/private`` partition
+  tpl          82M     1M    squashfs, Android ``/tpl`` partition
+
+                             ``libHA.AUDIO.TPL.decode.so``
+  factory      58M     100M  U-Boot legacy uImage
+  otapackage   94M     600M  ext3/4, Android ``/otapackage`` partition
+
+                             A single ``upgrade/update.zip``.
+  cache        442M    100M  ext3/4, Android ``/cache`` partition
+  system       782M    800M  ext3/4, Android ``/system`` partition
+  userdata     1302M         ext3/4, Android ``/data`` partition
+  ===========  ======  ====  ==============================================
+
+Fastboot
+--------
+
+.. code-block:: none
+
+  fastboot# getinfo ddrfree
+  DDR free region baseaddr:0x1000000 size:0x3F000000
+
+.. code-block:: none
+
+  fastboot# help
+  ?       - alias for 'help'
+  base    - print or set address offset
+  bootm   - boot application image from memory
+  bootp   - boot image via network using BOOTP/TFTP protocol
+  clear_bootf- clear Hibernate!! bootflag
+  cmp     - memory compare
+  cp      - memory copy
+  crc32   - checksum calculation
+  ddr     - ddr training function
+  fatinfo - print information about filesystem
+  fatload - load binary file from a dos filesystem
+  fatls   - list files in a directory (default /)
+  fdt     - flattened device tree utility commands
+  getinfo - print hardware information
+  go      - start application at address 'addr'
+  help    - print command description/usage
+  hibernate- Hibernate!! boot
+  ir      - IR command:
+  loadb   - load binary file over serial line (kermit mode)
+  loady   - load binary file over serial line (ymodem mode)
+  loop    - infinite loop on address range
+  md      - memory display
+  mii     - MII utility commands
+  mm      - memory modify (auto-incrementing address)
+  mmc     - MMC sub system
+  mmcinfo - mmcinfo <dev num>-- display MMC info
+  mtest   - simple RAM read/write test
+  mw      - memory write (fill)
+  nand    - NAND sub-system
+  nboot   - boot from NAND device
+  nm      - memory modify (constant address)
+  otp_burntoecurechipset- Burn to secure chipset, please be careful !!!
+  otp_getcustomerkey- otp_getcustomerkey
+  otp_getstbprivdata- otp_getstbprivdata
+  otp_gettrustzonestat- Get TEE status
+  otp_setstbprivdata- StbPrivData
+  otp_settrustzone- Set TEE enable
+  otpreadall- read otp ,for example otpreadall
+  otpwrite- write otp ,for example otpwrite adddress value
+  ping    - send ICMP ECHO_REQUEST to network host
+  printenv- print environment variables
+  rarpboot- boot image via network using RARP/TFTP protocol
+  reset   - Perform RESET of the CPU
+  saveenv - save environment variables to persistent storage
+  setenv  - set environment variables
+  tftp    - tftp  - download or upload image via network using TFTP protocol
+  unzip   - unzip a memory region
+  uploadx - upload binary file over serial line (xmodem mode)
+  usb     - USB sub-system
+  usbboot - boot from USB device
+  version - print monitor version
+
+
 Boot log
 --------
 

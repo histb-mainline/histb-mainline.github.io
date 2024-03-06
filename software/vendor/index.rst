@@ -7,5 +7,5 @@ This category describes behaviours of vendor `BSP <https://en.wikipedia.org/wiki
   :maxdepth: 2
   :titlesonly:
 
+  ./hitool
   ./fastboot
-  ./layout

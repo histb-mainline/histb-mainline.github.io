@@ -50,73 +50,97 @@ You can wire the test pin to GND permanently for easy debug. If no USB storage d
 
   <emmc fastboot log follows>
 
+.. _Serial Boot:
+
 Serial bootstrap
 ----------------
 
-.. note::
-  In HiSilicon official buring tool ``HiTool``, this is manipulated by ``Resources/Common/libbootrom.{dll,so}``
+In HiSilicon official buring tool "HiTool", this is manipulated by ``Resources/Common/libbootrom.{dll,so}``.
 
-Bootrom serial may give printable ASCII message or binary packet. Char point >= 0x80 indicates start of binary packet.
+Bootrom serial may give printable ASCII message or binary frame. Char point ``>= 0x80`` indicates start of binary frame.
 
 .. code-block:: c
 
-  /* big endian */
-
-  struct packet {
+  struct frame {
     u8 cmd;
-  #define CHIP_ID        0xbd
-  #define DECRYPT        0xce
-  #define BEGIN_TRANSFER 0xfe
-  #define TRANSFER       0xda
-  #define END_TRANSFER   0xed
-    u8 offset;  /* real_offset % 256, step 1 */
-    u8 offset_bnot;  /* ~offset */
-    u8 payload[];  /* could be struct cmd_? */
-    /* struct packet_request OR struct packet_reply */
+    u8 seq;  /* warp around 256 */
+    u8 seq_bnot;  /* ~seq */
+    u8 payload[];  /* see struct cmd_* */
+    /* struct frame_end end; */
   } __packed;
 
-  struct packet_request {
-    u16 crc16;
+  struct frame_end {
+    __be16 crc16;
   } __packed;
 
-  struct packet_reply {
-    u16 crc16;
-    u8 state;
-  #define PACKET_REPLY_OK             0xaa
-  #define PACKET_REPLY_CRC_MISMATCHED 0x55
+  #define CMD_HEAD  0xfe  /* set up load address and data length, TSerialComm::SendHeadFrame() */
+  #define CMD_DATA  0xda  /* send data, TSerialComm::SendDataFrame() */
+  #define CMD_TAIL  0xed  /* finish sending data, TSerialComm::SendTailFrame() */
+
+  struct cmd_head {
+    u8 padding;  /* 01 */
+    __be32 size;
+    __be32 addr;
   } __packed;
 
-  struct cmd_chip_id {
-    u8 cmd;
-  #define CHIP_IP_REQUEST 0x01
-  #define CHIP_IP_REPLY   0x08
-    union {
-      u64 chip_id;  /* see hardware/socs */
-      u64 request_unknown;  /* 00 00 00 00 00 00 00 01 */
-    }
+  struct cmd_data {
+    u8 payload[];  /* max 1024 */
   } __packed;
 
-  struct cmd_decrypt_request {
-    u8 cmd;  /* 01 */
-    u32 flag;
-    u32 flag2;  /* same as flag */
-  } __packed;
-
-  struct cmd_decrypt_reply {
-    u8 cmd;  /* 04 */
-    u32 unknown;  /* all 0 */
-  } __packed;
-
-  struct cmd_begin_transfer {
-    u8 cmd; /* 01 */
-    u32 size;
-    u32 offset;
-  } __packed;
-
-  struct cmd_transfer {
-    u8 payload[1024];
-  } __packed;
-
-  struct cmd_end_transfer {
+  struct cmd_tail {
     /* nothing */
   } __packed;
+
+If the chip supports ``BurnByLibBootrom`` (``BurnByLibBootrom=1`` in HiTool ``Resources/Common/ChipProperties/*.chip``), the following commands are also supported.
+
+.. seealso::
+  :ref:`ChipProperties`
+
+.. code-block:: c
+
+  #define CMD_TYPE  0xbd  /* get board info, TSerialComm::SendTypeFrame() */
+  #define CMD_BOARD 0xce  /* instruction, TSerialComm::SendBoardFrame() */
+
+  struct cmd_type_request {
+    u8 padding;  /* 01 */
+    __be64 not_bare_burn;  /* 1: not bare burn */
+    __be64 ddr_or_flash;  /* 1: flash type is ddr */
+  } __packed;
+
+  struct cmd_type_reply {
+    union {
+      struct {
+        bool ca : 1;
+        bool tee : 1;
+        bool multiform : 1;
+      };
+      u8 flags;
+    };
+    __be64 chip_id;  /* see hardware/socs */
+  } __packed;
+
+  struct cmd_board_request {
+    u8 padding;  /* 01 */
+    __be32 padding1;  /* all 0 */
+    __be32 padding2;  /* all 0 */
+  } __packed;
+
+  struct cmd_board_reply {
+    u8 reg;
+    __be32 padding;  /* all 0 */
+  } __packed;
+
+Device may reply with a frame, with a status code at the end of data, or just a single status code.
+
+.. code-block:: c
+
+  #define FRAME_REPLY_OK             0xaa
+  #define FRAME_REPLY_CRC_MISMATCHED 0x55
+
+Steps for sending data:
+
+1. Send frame ``Head(seq=0, size, addr)``, device should reply with a single ``0xaa``;
+2. Send frame ``Data(seq=1...n)`` to device (the last frame needs no padding), device should reply with a single ``0xaa``;
+
+   If a head frame is sent instead, the previous data will be ignored.
+3. Send frame ``Tail(seq=n+1)`` to device, device should reply with a single ``0xaa``.

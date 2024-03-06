@@ -6,4 +6,4 @@ Boards
   :titlesonly:
 
   ./ec6108v9c
-  ./hc2910
+  ./hc2910-sdgd

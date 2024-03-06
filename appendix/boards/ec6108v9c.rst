@@ -21,6 +21,150 @@ Board
   :width: 25%
   :alt: USB Boot pin
 
+bootargs
+--------
+
+.. code-block:: none
+
+  baudrate=115200
+  bootargs=console=ttyAMA0,115200 blkdevparts=mmcblk0:1M(fastboot),4M(bootargs),16M(recovery),1M(deviceinfo),4M(baseparam),4M(pqparam),4M(logo),16M(fastplay),8M(misc),24M(factory),12M(kernel),8M(iptv_data),340M(backup),340M(cache),520M(system),-(userdata)
+  bootargs_1G=mem=1G mmz=ddr,0,0,400M
+  bootargs_2G=mem=2G mmz=ddr,0,0,600M
+  bootargs_512M=mem=512M mmz=ddr,0,0,235M
+  bootcmd=mmc read 0 0x1FFBFC0 0x4B000 0x5000; bootm 0x1FFBFC0
+  bootdelay=0
+  bootfile="uImage"
+  gmac_debug=0
+  ipaddr=192.168.1.10
+  netmask=255.255.255.0
+  phy_addr=2,1
+  phy_intf=mii,rgmii
+  serverip=192.168.1.1
+  stderr=serial
+  stdin=serial
+  stdout=serial
+  use_mdio=0,1
+  verify=n
+
+Flash layout
+------------
+
+.. table::
+
+  ==========  ======  ====  ==============================================
+  Name        Offset  Size  Description
+  ==========  ======  ====  ==============================================
+  fastboot    0M      1M    :doc:`/software/bootrom/bootloader`
+  bootargs    1M      4M    U-Boot env file, sector size: ``0x10000``
+  recovery    5M      16M   Android bootimg
+  deviceinfo  21M     1M    Model type, Serial No, MAC address, etc
+  baseparam   22M     4M    ``hi_drv_pdm.h``
+  pqparam     26M     4M    Video Post Processing parameters
+  logo        30M     4M    ``LOGO_TABLE``
+  fastplay    34M     16M   Fastboot DRM parameters (optional)
+  misc        50M     8M    empty
+  factory     58M     24M   empty
+  kernel      82M     12M   Android bootimg
+  iptv_data   94M     8M    ``huawei_iptv_data_2.0``, control URL, etc
+  backup      102M    340M  ext3/4, Android ``/backup`` partition
+
+                            A single ``update.zip``, use command ``recoverbackup`` to apply.
+  cache       442M    340M  ext3/4, Android ``/cache`` partition
+  system      782M    520M  ext3/4, Android ``/system`` partition
+  userdata    1302M         ext3/4, Android ``/data`` partition
+  ==========  ======  ====  ==============================================
+
+Fastboot
+--------
+
+.. code-block:: none
+
+  fastboot# getinfo ddrfree
+  DDR free region baseaddr:0x1000000 size:0x3F000000
+
+.. code-block:: none
+
+  fastboot# help
+  ?       - alias for 'help'
+  CXSecSystemBoot- Conax CA security system booting
+  base    - print or set address offset
+  bootimg - boot application boot.img(kernel+ramdisk) from memory
+  bootm   - boot application image from memory
+  bootp   - boot image via network using BOOTP/TFTP protocol
+  ca_auth - verify android system: bootargs, recovory, kernel, system...
+  ca_cbcmac_test-
+  ca_common_verify_bootargs- ca_common_verify_bootargs
+  ca_common_verify_bootargs_partition- ca_common_verify_bootargs_partition
+  ca_common_verify_encryptimage- Encrypt image for Digital Signature
+  ca_common_verify_image_signature- verify pariton-image signature with tail mode
+  ca_common_verify_signature_check- verify BootArgs signature_check
+  ca_common_verify_system_signature- verify pariton-image signature with tail mode
+  ca_decryptflashpartition- decrypt flash_patition_name to DDR
+  ca_enablesecboot- ca_enablesecboot flash_type(spi|nand|sd|emmc)
+  ca_encryptboot- CA Encrypt Boot
+  ca_get_extern_rsa_key- get external rsa key
+  ca_getotprsakey- ca_getotprsakey
+  ca_getrsakeylockflag- ca_getrsakeylockflag
+  ca_getsecbootstatus- ca_getsecbootstatus
+  ca_lockrsakey- ca_lockrsakey
+  ca_setotprsakey- ca_setotprsakey
+  ca_special_burnflashname- Encrypt DDR image with R2R Key-ladder and burn DDR image into flash
+  ca_special_burnflashnamebylen- Encrypt DDR image with R2R Key-ladder and burn DDR image into flash
+  ca_special_verify- ca_special_verify flash_patition_name
+  ca_special_verifyaddr- ca_special_verifyaddr flash_patition_Addr
+  ca_special_verifybootargs- verify bootargs
+  cipher_cbc_mac_test-
+  clear_bootf- clear Hibernate!! bootflag
+  cmp     - memory compare
+  cp      - memory copy
+  crc32   - checksum calculation
+  ddr     - ddr training function
+  fatinfo - print information about filesystem
+  fatload - load binary file from a dos filesystem
+  fatls   - list files in a directory (default /)
+  getinfo - print hardware information
+  go      - start application at address 'addr'
+  hash    - Calcluate hash
+  hash_test- hash_test [x]:[0] SHA1; [1] SHA256; [2] HMAC-SHA1; [3] HMAC-SHA256;
+  help    - print command description/usage
+  hibernate- Hibernate!! boot
+  loadb   - load binary file over serial line (kermit mode)
+  loady   - load binary file over serial line (ymodem mode)
+  loop    - infinite loop on address range
+  md      - memory display
+  mii     - MII utility commands
+  mm      - memory modify (auto-incrementing address)
+  mmc     - MMC sub system
+  mmcinfo - mmcinfo <dev num>-- display MMC info
+  mtest   - simple RAM read/write test
+  mw      - memory write (fill)
+  nand    - NAND sub-system
+  nboot   - boot from NAND device
+  nm      - memory modify (constant address)
+  otp_burntoecurechipset- Burn to secure chipset, please be careful !!!
+  otp_getchipid- otp_getchipid
+  otp_getcustomerkey- otp_getcustomerkey
+  otp_getmsid- otp_getmsid
+  otp_getsecurebooten- otp_getsecurebooten
+  otp_getstbprivdata- otp_getstbprivdata
+  otp_getstbsn- otp_getstbsn
+  otp_setstbprivdata- StbPrivData
+  otpreadall- read otp ,for example otpreadall
+  otpwrite- write otp ,for example otpwrite adddress value
+  ping    - send ICMP ECHO_REQUEST to network host
+  printenv- print environment variables
+  rarpboot- boot image via network using RARP/TFTP protocol
+  reset   - Perform RESET of the CPU
+  saveenv - save environment variables to persistent storage
+  setenv  - set environment variables
+  setproflag-  --- setflags to product test page
+  tftp    - tftp  - download or upload image via network using TFTP protocol
+  unzip   - unzip a memory region
+  uploadx - upload binary file over serial line (xmodem mode)
+  usb     - USB sub-system
+  usbboot - boot from USB device
+  version - print monitor version
+
 Boot log
 --------
 
